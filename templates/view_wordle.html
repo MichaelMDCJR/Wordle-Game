@@ -88,9 +88,8 @@
             cell.classList.add("cell");
             yourBoard.appendChild(cell);
         }
-        
+
         enterPress.addEventListener("keydown", (event) => {
-            enterPress.preventDefault();
             if (event.key === 'Enter') {
                 validate(event);
             }
@@ -98,11 +97,11 @@
 
         function validate(entry) {
             var text = entry.target.value.toLowerCase();
-            if (word.length !== 5) {
+            if (text.length !== 5) {
                 alert("Word must be 5 letters long");
                 return
             }
-            makeGuess(word);
+            makeGuess(text);
         }
 
         function makeGuess(word) {
@@ -116,10 +115,18 @@
             .then(response => response.json())
             .then(data => {
                 updateBoard(yourBoard, data.history);
-                updateBoard(otherBoard, data.history);
-                if (data.result === "Correct, you guessed it!") {
-                    alert(data.result);
-                }
+
+                setTimeout(() => {
+                    if (data.result.includes("The word was: ")) {
+                        alert(data.result);
+                    }
+                    if (data.result === "No attempts left!") {
+                        alert(data.result);
+                    }
+                    if (data.result === "Correct, you guessed it!") {
+                        alert(data.result);
+                    }
+                }, 700);
             });
         }
 
@@ -132,6 +139,7 @@
                     cell.textContent = word[i];
                     board.appendChild(cell);
                 }
+
             });
         }
 
